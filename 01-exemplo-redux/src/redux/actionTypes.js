@@ -1,0 +1,1 @@
+export const SPEND_MONEY = 'SPEND_MONEY';
