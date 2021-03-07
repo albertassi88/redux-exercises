@@ -1,0 +1,8 @@
+.table th {
+    padding: 10px 50px;
+}
+
+.table_tr {
+    background-color: rgb(237, 240, 234);
+    padding: 10px;
+}
