@@ -1,30 +1,34 @@
 const INITIAL_STATE = {
-    user: [],   
-    idItem: 0,
+    user: [], 
+    userID: 0,  
+    editor: false,
+    idToEdit: null,
 }
 
 const userReducers = (state=INITIAL_STATE, action) => {
     switch (action.type) {
         case 'USER':
-        
+            const contador = { ...action.value, id: state.userID }
             return { ...state,                 
-                user: [ ...state.user, action.value ] 
+                user: [ ...state.user, contador ], 
+                userID: state.userID + 1,
             }
 
         case 'EDIT':
             return {
                 ...state,
-                idItem: action.value, 
+                editor: true,
+                idToEdit: action.value, 
             } 
             
         case 'SALVE':
+            const { idToEdit } = state  
             return {
-                ...state,      
-                user: state.user.map((item) => {                    
-                    const { idItem } = state  
-                    console.log('1',idItem)
-                    console.log('2',item.id)
-                    if (item.id === idItem) {
+                ...state,    
+                editor: false,  
+                idToEdit: null,
+                user: state.user.map((item) => {             
+                    if (item.id === idToEdit) {
                       return { ...item, ...action.value };
                     }
                     return item;

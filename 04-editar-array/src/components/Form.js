@@ -9,30 +9,18 @@ class Form extends React.Component {
     this.state = {
       nome: '',
       idade: '',
-      id: 0,
-    }    
-    this.handleButton = this.handleButton.bind(this);
-    this.handleButtonEdit = this.handleButtonEdit.bind(this);
+    }
+
+    this.handleButton = this.handleButton.bind(this);  
   } 
 
   handleButton() {
-    const { user, idUser} = this.props;
-    const { id } = this.state; 
-    user(this.state)
-    this.setState(
-      {
-        ...this.state, 
-        id: id + 1 
-      }, () => idUser(id));
-  };
-
-  handleButtonEdit() {
-    const { salveUser} = this.props;  
-    salveUser(this.state)    
-  }
+    const { user, salveUser, idToEdit, editor } = this.props;
+    editor ? salveUser(this.state) : user(this.state);    
+  }; 
 
   render() {
-      const { userState, idUser, salveUser } = this.props;       
+      const { userState, editUser, editor } = this.props;  
 
       return (
         <div>
@@ -40,16 +28,15 @@ class Form extends React.Component {
           <input value={this.state.nome} onChange={(e) => this.setState({ nome: e.target.value })}></input>
           Idade
           <input value={this.state.idade} onChange={(e) => this.setState({ idade: e.target.value })}></input>
-          <button onClick={ this.handleButton }>Confirmar</button>
+          <button onClick={ this.handleButton }>{ editor ? 'Salvar' : 'Adicionar' }</button>
           <table>   
             <tbody>         
               {userState.map(item => { 
                 return (                
                   <tr key={item.id}>                
                     <th>{item.nome}</th>
-                    <th>{item.idade}</th>
-                    {/* <th><button onClick={ this.handleButtonEdit } >Editar</button></th> */}
-                    <th><button onClick={ () => idUser(item.id) && salveUser(item.id) } >Editar</button></th>
+                    <th>{item.idade}</th>              
+                    <th><button onClick={ () => editUser(item.id) } >Editar</button></th>
                   </tr>
               )})}            
               </tbody>
@@ -59,14 +46,15 @@ class Form extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  userState: state.user.user,
-  userId: state,
+const mapStateToProps = ({ user }) => ({
+  userState: user.user,
+  idToEdit: user.idToEdit,
+  editor: user.editor,
 })
 
 const mapDispatchToProps = (dispatch) => ({
   user: (value => dispatch(userAction(value))),
-  idUser: (value => dispatch(editAction(value))),
+  editUser: (value => dispatch(editAction(value))),
   salveUser: (value => dispatch(salveAction(value))),
 })
 
